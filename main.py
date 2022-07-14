@@ -2,7 +2,7 @@ from flask import Flask, request
 from tests import msg_validator
 
 app = Flask(__name__)
-dict_of_sessions = {}
+dict_of_games = {}
 
 
 @app.route("/")
@@ -12,35 +12,41 @@ def start_page():
 
 @app.route("/status")
 def status():
-    return dict_of_sessions
+    return dict_of_games
 
 
-@app.route("/api/push/", methods=['POST'])
+@app.route("/api/pushGame", methods=['POST'])
 def save_data():
     schema = request.json
     flag = msg_validator(schema)
     if flag is True:
-        session = schema.pop("Session")
-        if session not in dict_of_sessions:
-            dict_of_sessions[session] = [schema]
-        else:
-            dict_of_sessions[session].append(schema)
+        game = schema.pop("game_id")
+        dict_of_games[game] = schema
         return "Success!", 200
     else:
         return "Wrong format", 400
 
 
-@app.route("/api/getSession/<int:session>")
-def getsession(session):
-    try:
-        if len(dict_of_sessions[session]) > 0:
-            info = dict_of_sessions.get(session)
-            answer = {session: info}
-            return answer, 200
-        elif len(dict_of_sessions[session]) == 0:
-            return "Not found", 200
-    except KeyError:
-        return "Not found user", 400
+@app.route("/api/getGamesId/<string:user>")
+def get_games_id(user):
+    # select * from games_db where user=user
+    return "User games ids: array"
+
+
+@app.route("/api/getAllGames/<string:user>")
+def get_all_games(user):
+    # need to think about db request
+    return "games: array with all games, where user played"
+
+
+@app.route("/api/getGameInfo/<int:game_id>")
+def get_game_info(game_id):
+    info = dict_of_games.get(game_id, "Not found")
+    if info != "Not found":
+        answer = {game_id: info}
+        return answer, 200
+    else:
+        return info, 400
 
 
 if __name__ == '__main__':
