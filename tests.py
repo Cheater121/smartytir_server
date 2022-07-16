@@ -20,7 +20,7 @@ schema = {
                     "maxProperties": 3,
                     "uniqueItems": True,
                     "properties": {
-                        "user": {
+                        "user_name": {
                             "type": "string",
                             "minLength": 1
                         },
@@ -34,7 +34,7 @@ schema = {
                         }
                     },
                     "required": [
-                        "user",
+                        "user_name",
                         "shoots",
                         "hits"]
                 }
