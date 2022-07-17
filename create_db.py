@@ -1,13 +1,13 @@
 # run it only one time for create tables
 
 import psycopg2
-from secret_info import user as u, password as p
+from secret_info import user, password
 
 conn = psycopg2.connect(
     host="localhost",
     database="flask_db1",
-    user=u,
-    password=p)
+    user=user,
+    password=password)
 
 # Open a cursor to perform database operations
 cur = conn.cursor()

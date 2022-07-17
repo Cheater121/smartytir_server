@@ -41,10 +41,16 @@ def get_games_id(user_name):
 def get_all_games(user_name):
     conn = get_db_connection()
     cur = conn.cursor()
-    # ToDo: need to return all games with player
+    try:
+        cur.execute('SELECT * FROM games WHERE game_id IN (SELECT game_id FROM games WHERE user_name=(%s));', [user_name])
+        games = cur.fetchall()
+        answer = {user_name: games}
+        print(answer)
+    except:
+        return "Bad request", 400
     cur.close()
     conn.close()
-    return "games: array with all games, where user played"
+    return answer
 
 
 @app.route("/api/getGameInfo/<int:game_id>")
@@ -105,6 +111,6 @@ def save_to_db(schema):
     cur.close()
     conn.close()
 
+
 if __name__ == '__main__':
-    #app.run(host='0.0.0.0')
     app.run()
