@@ -29,8 +29,8 @@ def get_games_id(user_name):
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     try:
         cur.execute('SELECT game_id FROM games WHERE user_name=(%s);', [user_name])
-        games_id = cur.fetchall()
-        answer = {user_name: games_id}
+        games_ids = cur.fetchall()
+        answer = {"user_name": user_name, "games_ids": games_ids}
     except:
         return "Bad request", 400
     cur.close()
@@ -45,8 +45,7 @@ def get_all_games(user_name):
     try:
         cur.execute('SELECT * FROM games WHERE game_id IN (SELECT game_id FROM games WHERE user_name=(%s));', [user_name])
         games = cur.fetchall()
-        answer = {user_name: games}
-        print(answer)
+        answer = {"user_name": user_name, "all_games": games}
     except:
         return "Bad request", 400
     cur.close()
@@ -62,7 +61,7 @@ def get_game_info(game_id):
         game_id = int(game_id)
         cur.execute('SELECT * FROM games WHERE game_id=(%s);', [game_id])
         games_id = cur.fetchall()
-        answer = {game_id: games_id}
+        answer = {"game_id": game_id, "game_info": games_id}
     except:
         return "Bad request", 400
     cur.close()
