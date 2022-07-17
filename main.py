@@ -1,4 +1,5 @@
 import psycopg2
+import psycopg2.extras
 from flask import Flask, request
 from tests import msg_validator
 from secret_info import user, password
@@ -25,7 +26,7 @@ def save_data():
 @app.route("/api/getGamesId/<string:user_name>")
 def get_games_id(user_name):
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     try:
         cur.execute('SELECT game_id FROM games WHERE user_name=(%s);', [user_name])
         games_id = cur.fetchall()
@@ -40,7 +41,7 @@ def get_games_id(user_name):
 @app.route("/api/getAllGames/<string:user_name>")
 def get_all_games(user_name):
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     try:
         cur.execute('SELECT * FROM games WHERE game_id IN (SELECT game_id FROM games WHERE user_name=(%s));', [user_name])
         games = cur.fetchall()
@@ -56,7 +57,7 @@ def get_all_games(user_name):
 @app.route("/api/getGameInfo/<int:game_id>")
 def get_game_info(game_id):
     conn = get_db_connection()
-    cur = conn.cursor()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     try:
         game_id = int(game_id)
         cur.execute('SELECT * FROM games WHERE game_id=(%s);', [game_id])
