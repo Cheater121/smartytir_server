@@ -49,7 +49,6 @@ schema = {
 def msg_validator(msg):
     try:
         validate(msg, schema)
+        return True
     except:
         return False
-    else:
-        return True
